@@ -1,4 +1,4 @@
-const { Category } = require('../models')
+const { Category } = require('../../models')
 const categoryContoller = {
   getCategories: (req, res, next) => {
     return Promise.all([

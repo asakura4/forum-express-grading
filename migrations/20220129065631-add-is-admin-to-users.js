@@ -12,7 +12,7 @@ module.exports = {
      */
     await queryInterface.addColumn('Users', 'is_admin', {
       type: Sequelize.BOOLEAN,
-      defaultValie: false
+      defaultValue: false
     })
   },
 

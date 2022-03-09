@@ -67,7 +67,6 @@ const userController = {
         for (const following of user.Followings) {
           followings.push(following.toJSON())
         }
-        console.log(followings)
 
         const followers = []
         for (const follower of user.Followers) {

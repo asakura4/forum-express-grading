@@ -26,9 +26,16 @@ const userController = {
   },
   getUser: (req, res, next) => {
     return Promise.all([
-      User.findByPk(req.params.id, {
-        nest: true,
-        raw: true
+      User.findOne({
+        include: [
+          { model: User, as: 'Followings' },
+          { model: User, as: 'Followers' },
+          { model: Restaurant, as: 'FavoritedRestaurants' }
+        ],
+        attributes: { exclude: ['password'] },
+        where: {
+          id: req.params.id
+        }
       }),
       Comment.findAll({
         include: Restaurant,
@@ -51,8 +58,32 @@ const userController = {
             restaurants.push(comment.Restaurant)
           }
         }
+        const favoriteRestaurants = []
+        for (const favorite of user.FavoritedRestaurants) {
+          favoriteRestaurants.push(favorite.toJSON())
+        }
+
+        const followings = []
+        for (const following of user.Followings) {
+          followings.push(following.toJSON())
+        }
+        console.log(followings)
+
+        const followers = []
+        for (const follower of user.Followers) {
+          followers.push(follower.toJSON())
+        }
+
         const defaultProfileIcon = `/upload/${process.env.DEFAULT_PROFILE}`
-        return res.render('users/profile', { user, sessionUser: req.user, defaultProfileIcon, restaurants })
+        return res.render('users/profile', {
+          user: user.toJSON(),
+          sessionUser: req.user,
+          defaultProfileIcon,
+          restaurants,
+          favoriteRestaurants,
+          followings,
+          followers
+        })
       })
       .catch(err => next(err))
   },
@@ -190,6 +221,7 @@ const userController = {
       include: [{ model: User, as: 'Followers' }]
     })
       .then(users => {
+        console.log(users)
         const result = users
           .map(user => ({
             ...user.toJSON(),

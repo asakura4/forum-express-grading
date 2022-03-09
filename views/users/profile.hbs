@@ -18,17 +18,66 @@
       </div>
   </div>
 </div>
-<div class="card">
-  <div class="card-header">
-    <strong>{{#if restaurants}}{{restaurants.length}}{{else}}0{{/if}}</strong> 已評論餐廳
+  <div class="row">
+    <div class="col-4">
+      <div class="card mb-2">
+        <div class="card-header">
+          <strong>{{#if followings}}{{followings.length}}{{else}}0{{/if}}</strong> Following(追蹤者)
+        </div>
+        <div class="card-body d-flex flex-wrap flex-row">
+          {{#if followings}}
+            {{#each followings}}
+              <img class="img-responsive center-block mx-2 " src="{{#if this.image}}{{this.image}}{{else}}{{defaultProfileIcon}}{{/if}}" style="width: 75px; transition: opacity 0.5s; opacity:0;" onload="this.style.opacity=1;">
+            {{/each}}
+          {{else}}
+            User does not follow anyone.
+          {{/if}}
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-header">
+          <strong>{{#if followers}}{{followers.length}}{{else}}0{{/if}}</strong> Follower(追隨者)
+        </div>
+        <div class="card-body d-flex flex-wrap flex-row">
+          {{#if followers}}
+            {{#each followers}}
+              <img class="img-responsive center-block mx-2 my-2" src="{{#if this.image}}{{this.image}}{{else}}{{defaultProfileIcon}}{{/if}}" style="width: 75px; transition: opacity 0.5s; opacity:0;" onload="this.style.opacity=1;">
+            {{/each}}
+          {{else}}
+            User does not have any follower.
+          {{/if}}
+        </div>
+      </div>
+    </div>
+   <div class="col-8">
+      <div class="card mb-2">
+          <div class="card-header">
+            <strong>{{#if restaurants}}{{restaurants.length}}{{else}}0{{/if}}</strong> 已評論餐廳
+          </div>
+          <div class="card-body d-flex flex-row">
+            {{#if restaurants}}
+              {{#each restaurants}}
+                <img class="img-responsive center-block mx-2 my-2" src="{{this.image}}" style="width: 100px; transition: opacity 0.5s; opacity:0;" onload="this.style.opacity=1;">
+              {{/each}}
+            {{else}}
+              User does not leave any comment.
+            {{/if}}
+          </div>
+      </div>
+      <div class="card">
+          <div class="card-header">
+            <strong>{{#if favoriteRestaurants}}{{favoriteRestaurants.length}}{{else}}0{{/if}}</strong> 收藏的餐廳
+          </div>
+          <div class="card-body d-flex flex-row">
+            {{#if favoriteRestaurants}}
+              {{#each favoriteRestaurants}}
+                <img class="img-responsive center-block mx-2 " src="{{this.image}}" style="width: 100px; transition: opacity 0.5s; opacity:0;" onload="this.style.opacity=1;">
+              {{/each}}
+            {{else}}
+              User does not add any restaurant to favorites.
+            {{/if}}
+          </div>
+      </div>
+   </div>
   </div>
-  <div class="card-body d-flex flex-row">
-    {{#if restaurants}}
-      {{#each restaurants}}
-        <img class="img-responsive center-block mx-2 " src="{{this.image}}" style="width: 100px; transition: opacity 0.5s; opacity:0;" onload="this.style.opacity=1;">
-      {{/each}}
-    {{else}}
-      User does not leave any comment.
-    {{/if}}
-  </div>
-</div>
+

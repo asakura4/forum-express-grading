@@ -6,11 +6,7 @@ const adminController = {
     adminServices.getRestaurants(req, (err, restaurants) => err ? next(err) : res.render('admin/restaurants', { restaurants }))
   },
   createRestaurant: (req, res, next) => {
-    Category.findAll({
-      raw: true
-    })
-      .then(categories => res.render('admin/create-restaurant', { categories }))
-      .catch(err => next(err))
+    adminServices.createRestaurant(req, (err, categories) => err ? next(err) : res.render('admin/create-restaurant', categories))
   },
   postRestaurant: (req, res, next) => {
     adminServices.postRestaurant(req, (err, data) => {
@@ -20,64 +16,21 @@ const adminController = {
     })
   },
   getRestaurant: (req, res, next) => {
-    Restaurant.findByPk(req.params.id, {
-      // raw: true,
-      // nest: true,
-      include: [Category]
+    adminServices.getRestaurant(req, (err, restaurant) => {
+      if (err) return next(err)
+      console.log(restaurant)
+      return res.render('admin/restaurant', restaurant)
     })
-      .then(restaurant => {
-        if (!restaurant) {
-          throw new Error("Restaurant didn't exist")
-        }
-        res.render('admin/restaurant', { restaurant: restaurant.toJSON() })
-      })
-      .catch(err => next(err))
   },
   editRestaurant: (req, res, next) => {
-    return Promise.all([
-      Restaurant.findByPk(req.params.id, {
-        raw: true
-      }),
-      Category.findAll({ raw: true })
-    ])
-
-      .then(([restaurant, categories]) => {
-        if (!restaurant) {
-          throw new Error("Restaurant didn't exist!")
-        }
-        res.render('admin/edit-restaurant', { restaurant, categories })
-      })
-      .catch(err => next(err))
+    adminServices.editRestaurant(req, (err, { restaurant, categories }) => err ? next(err) : res.render('admin/edit-restaurant', { restaurant, categories }))
   },
   putRestaurant: (req, res, next) => {
-    const { name, tel, address, openingHours, description, categoryId } = req.body
-    if (!name) {
-      throw new Error('Restaurant name is required')
-    }
-    const { file } = req
-    Promise.all([
-      Restaurant.findByPk(req.params.id),
-      imgurFileHandler(file)
-    ])
-      .then(([restaurant, filePath]) => {
-        if (!restaurant) {
-          throw new Error("Restaurant didn't exist")
-        }
-        return restaurant.update({
-          name,
-          tel,
-          address,
-          openingHours,
-          description,
-          image: filePath || restaurant.image,
-          categoryId
-        })
-      })
-      .then(() => {
-        req.flash('success_messages', 'restaurant was updated successfully')
-        res.redirect('/admin/restaurants')
-      })
-      .catch(err => next(err))
+    adminServices.putRestaurant(req, (err, data) => {
+      if (err) return next(err)
+      req.flash('success_messages', 'restaurant was updated successfully')
+      return res.redirect('/admin/restaurants', data)
+    })
   },
   deleteRestaurant: (req, res, next) => {
     adminServices.deleteRestaurant(req, (err, data) => err ? next(err) : res.redirect('/admin/restaurants', data))

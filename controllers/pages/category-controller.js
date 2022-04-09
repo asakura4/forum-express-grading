@@ -1,50 +1,17 @@
 const { Category } = require('../../models')
+const categroyServices = require('../../services/category-services')
 const categoryContoller = {
   getCategories: (req, res, next) => {
-    return Promise.all([
-      Category.findAll({ raw: true }),
-      req.params.id ? Category.findByPk(req.params.id, { raw: true }) : null
-    ])
-      .then(([categories, category]) => {
-        res.render('admin/categories', { categories, category })
-      })
-      .catch(err => next(err))
+    categroyServices.getCategories(req, (err, data) => err ? next(err) : res.render('admin/categories', data))
   },
   postCategory: (req, res, next) => {
-    const { name } = req.body
-    if (!name) {
-      throw new Error('Category name is required')
-    }
-    return Category.create({ name })
-      .then(() => res.redirect('/admin/categories'))
-      .catch(err => next(err))
+    categroyServices.postCategory(req, (err, data) => err ? next(err) : res.redirect('/admin/categories'))
   },
-
   putCategory: (req, res, next) => {
-    const { name } = req.body
-    if (!name) {
-      throw new Error('Category name is required')
-    }
-    return Category.findByPk(req.params.id)
-      .then(category => {
-        if (!category) {
-          throw new Error('Category id does not exists')
-        }
-        return category.update({ name })
-      })
-      .then(() => res.redirect('/admin/categories'))
-      .catch(err => next(err))
+    categroyServices.putCategory(req, (err, data) => err ? next(err) : res.redirect('/admin/categories'))
   },
   deleteCagtegory: (req, res, next) => {
-    return Category.findByPk(req.params.id)
-      .then(category => {
-        if (!category) {
-          throw new Error('Category id does not exists')
-        }
-        return category.destroy()
-      })
-      .then(() => res.redirect('/admin/categories'))
-      .catch(err => next(err))
+    categroyServices.deleteCagtegory(req, (err, data) => err ? next(err) : res.redirect('/admin/categories'))
   }
 }
 
